@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube</title>
+    <link rel="icon" href="./head_logo.png" type="image/x-icon" />
+    <script
+      src="https://kit.fontawesome.com/c610c7a2ec.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        padding: 0;
+        margin: 0;
+      }
+      iframe {
+        border: none;
+      }
+
+      .videobox {
+        border: 1px solid;
+        width: 100%;
+        height: 630px;
+        text-align: center;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="videobox"></div>
+  </body>
+</html>
+<script>
+  let video = JSON.parse(localStorage.getItem("video"));
+  //   console.log(video);
+
+  let box = document.querySelector(".videobox");
+
+  let append = (video) => {
+    let frame = document.createElement("iframe");
+    frame.src = `https://www.youtube.com/embed/${video.videoId}`;
+    frame.width = "99%";
+    frame.height = "620px";
+    frame.allow = "fullscreen";
+
+    box.append(frame);
+  };
+
+  append(video);
+</script>

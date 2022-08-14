@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>YouTube</title>
+    <link rel="icon" href="./head_logo.png" type="image/x-icon" />
+    <link rel="stylesheet" href="style.css" />
+    <script
+      src="https://kit.fontawesome.com/c610c7a2ec.js"
+      crossorigin="anonymous"
+    ></script>
+    <link
+      href="https://fonts.googleapis.com/icon?family=Material+Icons"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="navbar">
+      <div class="logo">
+        <i class="material-icons">menu</i>
+        <img src="./youtube_logo.png" alt="logo" />
+      </div>
+      <div class="searchdiv">
+        <input type="text" placeholder="Search" id="search" />
+        <button onclick="myfun()">
+          <i class="material-icons">search</i>
+        </button>
+        <i class="material-icons" id="mike">mic</i>
+      </div>
+      <div class="right_side">
+        <i class="fa-solid fa-video"></i>
+        <i class="material-icons">apps</i>
+        <i class="material-icons">notifications</i>
+        <div class="signin">
+          <i class="material-icons">account_circle</i>
+          <h4>SIGN IN</h4>
+        </div>
+      </div>
+    </div>
+    <div class="data">
+      <div class="sidePanel">
+        <span><i class="material-icons">home</i>Home</span>
+        <span><i class="material-icons">explore</i>Explore</span>
+        <span><i class="material-icons">subscriptions</i>Subscriptions</span>
+        <span><i class="material-icons">video_library</i>Library</span>
+      </div>
+      <div class="searchlist"></div>
+    </div>
+  </body>
+</html>
+<script>
+  document.querySelector(".logo>img").addEventListener("click", () => {
+    window.location.href = "index.html";
+  });
+
+  let inputValue = JSON.parse(localStorage.getItem("inputValue"));
+  document.querySelector("title").innerText = `${inputValue.q} - YouTube`;
+
+  //INPUT VALUE SEARCH
+  let myfun = () => {
+    const q = document.querySelector("#search").value;
+
+    let query = { q };
+    localStorage.setItem("inputValue", JSON.stringify(query));
+
+    window.location.href = "video.html";
+  };
+
+  //LOCALSTORAGE DATA VIDEOS
+  let youtubefun = async () => {
+    try {
+      const key = `AIzaSyC5Eh5BvX-3G0DZCaUgoJ8rDTT3pq7TBjY`;
+      const key2 = `AIzaSyDRCDWxlJBQ6077to0K0nBTYLEoEJ4nSSI`;
+      const url = `https://youtube.googleapis.com/youtube/v3/search?part=snippet&maxResults=20&q=${inputValue.q}%202&key=${key2}`;
+
+      let res = await fetch(url);
+      let data = await res.json();
+      //   console.log(data.items);
+
+      append(data.items);
+    } catch (err) {
+      console.log("err:", err);
+    }
+  };
+  youtubefun();
+
+  //====================================================================
+
+  let box = document.querySelector(".searchlist");
+
+  let append = (videos) => {
+    box.innerHTML = null;
+    videos.map(
+      ({
+        id: { videoId },
+        snippet: {
+          title,
+          channelTitle,
+          description,
+          thumbnails: { medium },
+        },
+      }) => {
+        let div = document.createElement("div");
+        div.setAttribute("class", "searchVideosDiv");
+
+        let detail = document.createElement("div");
+        detail.setAttribute("class", "detailsDiv");
+
+        let img = document.createElement("img");
+        img.src = medium.url;
+
+        let name = document.createElement("h3");
+        name.innerText = title;
+
+        let channel = document.createElement("h5");
+        channel.innerText = channelTitle;
+
+        let desc = document.createElement("p");
+        desc.innerText = description;
+
+        detail.append(name, channel, desc);
+
+        div.append(img, detail);
+        box.append(div);
+
+        let data = {
+          videoId,
+        };
+
+        div.onclick = () => {
+          showVideo(data);
+        };
+      }
+    );
+  };
+
+  let showVideo = (data) => {
+    localStorage.setItem("video", JSON.stringify(data));
+    window.open(`search.html`, `_blank`);
+  };
+</script>
